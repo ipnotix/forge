@@ -1,7 +1,8 @@
 {
-  "name": "Il mio sito",
-  "short_name": "Mio Sito",
-  "start_url": "/",
+  "name": "FORGE",
+  "short_name": "FORGE",
+  "start_url": "./",
+  "scope": "./"
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
