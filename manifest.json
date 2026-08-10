@@ -1,8 +1,8 @@
 {
   "name": "FORGE",
   "short_name": "FORGE",
-  "start_url": "./",
-  "scope": "./"
+  "start_url": "/forge/",
+  "scope": "/forge/"
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
