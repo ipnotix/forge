@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+  <link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0B1220">
@@ -9,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Allenamento">
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Allenamento%20Dieta%20Spesa%22%2C%22short_name%22%3A%22Allenamento%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230B1220%22%2C%22theme_color%22%3A%22%230B1220%22%2C%22icons%22%3A%5B%5D%7D">
-<title>Pallavolo — Allenamento, Dieta, Spesa</title>
+<title>FORGE 🔥</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -4054,6 +4057,15 @@ async function initApp(){
 }
 
 initApp();
+</script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker registrato'))
+        .catch(err => console.error('Errore Service Worker:', err));
+    });
+  }
 </script>
 </body>
 </html>
