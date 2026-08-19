@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
-<meta name="mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0B1220">
@@ -12,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Allenamento">
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Allenamento%20Dieta%20Spesa%22%2C%22short_name%22%3A%22Allenamento%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230B1220%22%2C%22theme_color%22%3A%22%230B1220%22%2C%22icons%22%3A%5B%5D%7D">
-<title>FORGE 🔥</title>
+<title>Pallavolo — Allenamento, Dieta, Spesa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -75,6 +72,11 @@
     position:relative;
     padding-bottom:calc(72px + env(safe-area-inset-bottom));
   }
+  /* Sulla home il padding per la tab bar è già calcolato dentro fitHomeToScreen
+     (bottomSafety = tabBarHeight + 10): tenere anche questo padding-bottom fisso
+     lo sommerebbe due volte, spingendo il contenuto oltre lo schermo e causando
+     uno scroll residuo anche quando tutto ci starebbe perfettamente. */
+  .app.home-active{ padding-bottom:0; }
 
   /* ===================== SCREEN TRANSITIONS ===================== */
   @keyframes fadeSlideIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
@@ -126,7 +128,7 @@
   #homeFitOuter{ overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
   #homeScaleWrap{ transform-origin:top center; will-change:transform; }
 
-  .home-dash{ padding:12px 16px 4px; display:flex; flex-direction:column; gap:9px; }
+  .home-dash{ padding:10px 12px 4px; display:flex; flex-direction:column; gap:9px; }
 
   .today-card{
     position:relative; overflow:hidden;
@@ -268,7 +270,7 @@
   /* ===================== IMPOSTAZIONI ===================== */
   .settings-card{
     background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg);
-    padding:18px; margin:0 18px 14px; box-shadow:var(--sh-xs);
+    padding:18px; margin:18px 18px 14px; box-shadow:var(--sh-xs);
   }
   .settings-card .data-card-title{ margin-bottom:4px; }
   .settings-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
@@ -277,7 +279,7 @@
   .settings-note{ font-size:12.5px; color:var(--sub); text-align:center; padding:24px 30px; line-height:1.6; }
 
   /* ===================== NAV CARDS (legacy, non più usate ma innocue) ===================== */
-  .main-home{ padding:8px 18px 30px; display:flex; flex-direction:column; gap:12px; }
+  .main-home{ padding:6px 12px 24px; display:flex; flex-direction:column; gap:10px; }
   .main-card{
     background:var(--card); border-radius:var(--r-lg); padding:20px 19px;
     display:flex; align-items:center; gap:15px; cursor:pointer;
@@ -420,6 +422,13 @@
   }
   .done-title{ font-size:23px; font-weight:800; color:var(--navy); font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:-.3px; animation:fadeSlideIn .4s var(--ease) .1s backwards; }
   .done-sub{ font-size:13.5px; color:var(--sub); max-width:290px; line-height:1.55; font-weight:500; animation:fadeSlideIn .4s var(--ease) .18s backwards; }
+  .advanced-prompt{
+    width:100%; max-width:290px; margin-top:14px; padding:14px 16px;
+    background:linear-gradient(155deg, var(--violet-soft), #fff); border:1.5px solid #DCD6FB;
+    border-radius:var(--r-lg); animation:fadeSlideIn .4s var(--ease) .3s backwards;
+  }
+  .advanced-prompt-title{ font-size:14px; font-weight:800; color:var(--navy); }
+  .advanced-prompt-text{ font-size:12px; color:var(--sub); line-height:1.5; margin-top:5px; }
   .confetti-piece{ position:absolute; top:20%; width:8px; height:8px; border-radius:2px; animation:confettiFall 1.6s ease-in forwards; pointer-events:none; }
 
   .history{ padding:0 18px 30px; display:flex; flex-direction:column; gap:8px; }
@@ -503,6 +512,7 @@
     font-size:14px; color:transparent; font-weight:900; transition:.15s var(--ease-spring); background:#fff;
   }
   .meal-check.checked{ background:var(--teal); border-color:var(--teal); color:#fff; animation:checkPop .3s var(--ease-spring); }
+  .meal-check.checked.partial{ background:var(--orange); border-color:var(--orange); font-size:8.5px; width:auto; min-width:26px; padding:0 3px; }
 
   .recipe-screen{ display:flex; flex-direction:column; flex:1; }
   .recipe-top-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px 0; }
@@ -659,6 +669,15 @@
   }
   .extra-field input:focus{ outline:none; border-color:var(--orange); box-shadow:0 0 0 4px var(--orange-soft); }
   .extra-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 10px; margin-top:2px; }
+  .meal-pct-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .meal-pct-btn{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:var(--bg); border:1.5px solid var(--line); border-radius:14px;
+    padding:14px 8px; font-size:12.5px; font-weight:700; color:var(--navy);
+    cursor:pointer; transition:transform .12s var(--ease), border-color .12s var(--ease), background .12s var(--ease);
+  }
+  .meal-pct-btn span{ font-size:16px; font-weight:800; color:var(--teal); }
+  .meal-pct-btn:active{ transform:scale(.95); border-color:var(--teal); background:var(--teal-soft, #E0F5F2); }
 
   .extra-auto-btn{
     width:100%; margin-top:12px; padding:12px; border-radius:var(--r-sm); border:1.5px dashed var(--teal);
@@ -755,7 +774,7 @@
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="appRoot">
 
   <div class="topbar hidden" id="topbar">
     <div class="topbar-row">
@@ -837,7 +856,27 @@
         <button class="cta secondary" id="settingsProfileEditBtn">Modifica dati</button>
       </div>
     </div>
-    <div class="settings-note">Altre impostazioni (notifiche, unità di misura, backup) arriveranno qui in futuro.</div>
+
+    <div class="settings-card">
+      <div class="data-card-title">Stima nutrizionale automatica</div>
+      <div class="settings-note" style="padding:8px 0 0; text-align:left;">
+        Dentro Claude, la stima del cibo fuori piano funziona già in automatico. Se apri questo file
+        da Chrome fuori da Claude, funziona solo inserendo qui una tua chiave API OpenRouter personale
+        (gratuita da creare su openrouter.ai). Resta salvata solo su questo dispositivo, ma
+        chiunque abbia accesso al file/telefono potrebbe vederla — usala solo se ti va bene questo compromesso.
+      </div>
+      <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:8px; padding-top:14px;">
+        <input type="password" id="apiKeyInput" placeholder="sk-or-v1-..." autocomplete="off"
+          style="width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--line); font-size:13.5px; font-family:inherit;">
+        <div style="display:flex; gap:8px;">
+          <button class="cta secondary" id="apiKeySaveBtn" style="flex:1;">Salva chiave</button>
+          <button class="cta ghost" id="apiKeyClearBtn" style="flex:1;">Rimuovi</button>
+        </div>
+        <div id="apiKeyStatus" style="font-size:12px; font-weight:700; text-align:center; min-height:16px;"></div>
+      </div>
+    </div>
+
+    <div class="settings-note">La pagina funziona offline come file locale. La sola funzione "Stima nutrizionale" richiede Internet per contattare OpenRouter. Se il modello principale fallisce, OpenRouter prova automaticamente i modelli di riserva in ordine.</div>
   </div>
 
   <div id="viewAllenamento" class="hidden">
@@ -1018,6 +1057,24 @@
     </div>
   </div>
 
+  <div id="mealPctOverlay" class="confirm-overlay hidden">
+    <div class="confirm-box">
+      <div class="confirm-icon">🍽️</div>
+      <div class="confirm-title">Quanto ne hai mangiato?</div>
+      <div class="confirm-msg" id="mealPctMsg">Se ti mancava qualche ingrediente (tipo una salsa), i valori si aggiustano di conseguenza.</div>
+      <div class="meal-pct-grid">
+        <button class="meal-pct-btn" data-pct="100">Tutto<span>100%</span></button>
+        <button class="meal-pct-btn" data-pct="75">Quasi tutto<span>75%</span></button>
+        <button class="meal-pct-btn" data-pct="50">Metà<span>50%</span></button>
+        <button class="meal-pct-btn" data-pct="25">Un assaggio<span>25%</span></button>
+      </div>
+      <div class="confirm-actions">
+        <button class="cta secondary" id="mealPctUncheckBtn">Segna come non mangiato</button>
+      </div>
+      <button class="cta ghost" id="mealPctCancelBtn" style="width:100%; margin-top:4px;">Annulla</button>
+    </div>
+  </div>
+
   <div id="weightEditOverlay" class="confirm-overlay hidden">
     <div class="confirm-box">
       <div class="confirm-icon">⚖️</div>
@@ -1081,7 +1138,8 @@ const DATA = {
           {name:"Ponte glutei (bridge)", sets:3, mode:"reps", reps:"12 ripetizioni, 2 sec in alto", tip:"Spingi con i talloni, contrai i glutei in alto, evita di inarcare troppo la lombare."},
           {name:"Plank su avambracci", sets:3, mode:"time", duration:25, tip:"Corpo in linea retta da testa a talloni, addome contratto, non far cadere il bacino."},
           {name:"Side plank (ginocchia piegate se serve)", sets:2, mode:"time", duration:18, tip:"Cambia lato ad ogni serie. Fianchi sollevati, corpo allineato, non far crollare il bacino."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:60, tip:"Postura del bambino (child's pose): siediti sui talloni, allunga le braccia in avanti, rilassa la lombare, 30 sec. Cat-Cow lento: alterna inarcamento e arrotondamento della schiena seguendo il respiro, 30 sec."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:30, tip:"Siediti sui talloni, allunga le braccia in avanti, rilassa la lombare."},
+          {name:"Stretching — Cat-Cow lento", sets:1, mode:"time", duration:30, tip:"Alterna inarcamento e arrotondamento della schiena seguendo il respiro."},
         ]
       },
       fisicoB: {
@@ -1096,7 +1154,9 @@ const DATA = {
           {name:"Piegamenti (push-up)", sets:3, mode:"reps", reps:"8-10 ripetizioni (anche sulle ginocchia se serve)", tip:"Corpo in linea retta, mani leggermente più larghe delle spalle, scendi controllato fino quasi a toccare terra."},
           {name:"Curl bicipiti con manubri", sets:3, mode:"reps", reps:"12 ripetizioni", tip:"Gomiti fermi ai fianchi, sali controllato senza slanciare il busto."},
           {name:"Curl bicipiti monobraccio da seduto", sets:2, mode:"reps", reps:"12 ripetizioni per braccio", tip:"Seduto, gomito appoggiato all'interno coscia o al fianco, sali un braccio alla volta senza aiutarti con il busto. Isola meglio il bicipite rispetto alla versione in piedi."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:60, tip:"Petto/spalle: braccio al muro dietro di te, ruota leggermente il busto dal lato opposto, 15 sec per lato. Bicipiti: braccio teso davanti a te, palmo verso l'alto, tira le dita indietro con l'altra mano, 15 sec per lato. Quadricipiti: in piedi, piega un ginocchio portando il tallone verso il gluteo, 15 sec per lato."},
+          {name:"Stretching — Petto/spalle", sets:2, mode:"time", duration:15, tip:"Braccio al muro dietro di te, ruota leggermente il busto dal lato opposto. Cambia lato alla seconda serie."},
+          {name:"Stretching — Bicipiti", sets:2, mode:"time", duration:15, tip:"Braccio teso davanti a te, palmo verso l'alto, tira le dita indietro con l'altra mano. Cambia lato alla seconda serie."},
+          {name:"Stretching — Quadricipiti", sets:2, mode:"time", duration:15, tip:"In piedi, piega un ginocchio portando il tallone verso il gluteo. Cambia lato alla seconda serie."},
         ]
       },
       fisicoC: {
@@ -1111,7 +1171,9 @@ const DATA = {
           {name:"Chin tuck (doppio mento)", sets:3, mode:"reps", reps:"10 ripetizioni, tieni 3 sec", tip:"Arretra il mento come per fare il doppio mento, senza inclinare la testa."},
           {name:"Plank laterale con rotazione", sets:2, mode:"reps", reps:"8 per lato", tip:"Da side plank, infila il braccio libero sotto il busto ruotando, poi riapri verso il soffitto."},
           {name:"Palleggio al muro", sets:3, mode:"reps", reps:"30 palleggi consecutivi", tip:"Con la palla soft, palleggia contro il muro a un'altezza comoda. Punta su un tocco morbido delle dita e un movimento fluido del polso, non sulla velocità."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:60, tip:"Collo: inclina la testa portando l'orecchio verso la spalla, senza forzare, 15 sec per lato. Postura del bambino per rilassare il core: 20 sec. Polso: braccio teso, palmo verso l'alto, tira le dita indietro con l'altra mano, 5 sec per lato."},
+          {name:"Stretching — Collo", sets:2, mode:"time", duration:15, tip:"Inclina la testa portando l'orecchio verso la spalla, senza forzare. Cambia lato alla seconda serie."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:20, tip:"Rilassa il core in postura del bambino."},
+          {name:"Stretching — Polso", sets:2, mode:"time", duration:5, tip:"Braccio teso, palmo verso l'alto, tira le dita indietro con l'altra mano. Cambia lato alla seconda serie."},
         ]
       },
       salto: {
@@ -1124,7 +1186,8 @@ const DATA = {
           {name:"Affondi in avanti controllati", sets:3, mode:"reps", reps:"10 per gamba", tip:"Passo lungo, scendi verticale, spingi con il tallone per tornare su."},
           {name:"Ponte glutei monopodalico", sets:3, mode:"reps", reps:"10 per gamba", tip:"Una gamba tesa in aria, spingi con il tallone dell'altra gamba a terra."},
           {name:"Mobilità caviglia al muro", sets:2, mode:"reps", reps:"10 per lato", tip:"Ginocchio verso il muro senza staccare il tallone da terra, senti l'allungo del polpaccio."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:60, tip:"Quadricipiti: in piedi, piega un ginocchio portando il tallone al gluteo, 15 sec per lato. Polpacci: gamba tesa indietro, tallone a terra, spingi il bacino verso il muro, 15 sec per lato."},
+          {name:"Stretching — Quadricipiti", sets:2, mode:"time", duration:15, tip:"In piedi, piega un ginocchio portando il tallone al gluteo. Cambia lato alla seconda serie."},
+          {name:"Stretching — Polpacci", sets:2, mode:"time", duration:15, tip:"Gamba tesa indietro, tallone a terra, spingi il bacino verso il muro. Cambia lato alla seconda serie."},
         ]
       }
     }
@@ -1142,7 +1205,9 @@ const DATA = {
           {name:"Pallof press con manubrio", sets:3, mode:"reps", reps:"10 per lato", tip:"In piedi, manubrio davanti al petto, spingi in avanti resistendo alla rotazione del busto."},
           {name:"Bridge monopodalico", sets:3, mode:"reps", reps:"10 per gamba", tip:"Una gamba tesa, spingi con il tallone dell'altra, evita di ruotare il bacino."},
           {name:"Side plank con abduzione gamba", sets:2, mode:"reps", reps:"12 per lato", tip:"Da side plank, solleva e abbassa la gamba superiore mantenendo il bacino alto."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:75, tip:"Postura del bambino: 25 sec. Torsione lombare da sdraiato: ginocchia piegate verso un lato poi l'altro, braccia aperte a terra, 15 sec per lato. Flessori dell'anca in affondo, ginocchio a terra, bacino in avanti: 10 sec per lato."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:25, tip:"Siediti sui talloni, allunga le braccia in avanti, rilassa la lombare."},
+          {name:"Stretching — Torsione lombare", sets:2, mode:"time", duration:15, tip:"Da sdraiato, ginocchia piegate verso un lato poi l'altro, braccia aperte a terra. Cambia lato alla seconda serie."},
+          {name:"Stretching — Flessori dell'anca", sets:2, mode:"time", duration:10, tip:"Affondo con ginocchio a terra, bacino in avanti. Cambia lato alla seconda serie."},
         ]
       },
       fisicoB: {
@@ -1158,7 +1223,9 @@ const DATA = {
           {name:"Curl bicipiti monobraccio da seduto", sets:2, mode:"reps", reps:"12 ripetizioni per braccio", tip:"Seduto, gomito appoggiato all'interno coscia o al fianco, sali un braccio alla volta senza aiutarti con il busto."},
           {name:"Estensione tricipiti con manubrio", sets:3, mode:"reps", reps:"12 ripetizioni", tip:"Manubrio sopra la testa con entrambe le mani, piega i gomiti portando il peso dietro la nuca, poi estendi."},
           {name:"Plank", sets:3, mode:"time", duration:35, tip:"Corpo in linea, addome contratto, respira con calma."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:75, tip:"Petto: braccio al muro dietro di te, ruota il busto dal lato opposto, 15 sec per lato. Tricipiti: braccio piegato dietro la testa, spingi delicatamente il gomito con l'altra mano, 15 sec per lato. Ischiocrurali: gamba tesa in avanti su un rialzo basso, busto in avanti mantenendo la schiena dritta, 15 sec per lato."},
+          {name:"Stretching — Petto", sets:2, mode:"time", duration:15, tip:"Braccio al muro dietro di te, ruota il busto dal lato opposto. Cambia lato alla seconda serie."},
+          {name:"Stretching — Tricipiti", sets:2, mode:"time", duration:15, tip:"Braccio piegato dietro la testa, spingi delicatamente il gomito con l'altra mano. Cambia lato alla seconda serie."},
+          {name:"Stretching — Ischiocrurali", sets:2, mode:"time", duration:15, tip:"Gamba tesa in avanti su un rialzo basso, busto in avanti mantenendo la schiena dritta. Cambia lato alla seconda serie."},
         ]
       },
       fisicoC: {
@@ -1171,7 +1238,9 @@ const DATA = {
           {name:"Dead bug avanzato con manubrio", sets:3, mode:"reps", reps:"10 per lato", tip:"Manubrio tra le mani sopra il petto, gamba e braccio opposti si estendono insieme."},
           {name:"Plank con marcia", sets:3, mode:"time", duration:20, tip:"In plank, solleva un piede alla volta mantenendo il bacino fermo."},
           {name:"Palleggio al muro con variazione d'altezza", sets:3, mode:"reps", reps:"40 palleggi consecutivi", tip:"Con la palla soft, alterna palleggi bassi e alti contro il muro, mantenendo il controllo del tocco anche quando cambi ritmo."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:75, tip:"Collo: inclina la testa lateralmente, 15 sec per lato. Postura del bambino: 25 sec. Polso: braccio teso, palmo verso l'alto, tira le dita indietro, 10 sec per lato."},
+          {name:"Stretching — Collo", sets:2, mode:"time", duration:15, tip:"Inclina la testa lateralmente. Cambia lato alla seconda serie."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:25, tip:"Rilassa il core in postura del bambino."},
+          {name:"Stretching — Polso", sets:2, mode:"time", duration:10, tip:"Braccio teso, palmo verso l'alto, tira le dita indietro. Cambia lato alla seconda serie."},
         ]
       },
       salto: {
@@ -1183,7 +1252,9 @@ const DATA = {
           {name:"Squat jump leggeri", sets:3, mode:"reps", reps:"8 ripetizioni", tip:"Salto piccolo e controllato, atterraggio morbido piegando le ginocchia."},
           {name:"Step-up su gradino stabile", sets:3, mode:"reps", reps:"10 per gamba (se disponibile)", tip:"Sali con controllo, spingi con il tallone, scendi lentamente."},
           {name:"Affondo con salto leggero alternato", sets:3, mode:"reps", reps:"6 per gamba", tip:"Solo se ti senti stabile, altrimenti resta con l'affondo statico."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:75, tip:"Quadricipiti: in piedi, piega un ginocchio portando il tallone al gluteo, 15 sec per lato. Polpacci: gamba tesa indietro, tallone a terra, 15 sec per lato. Ischiocrurali: gamba tesa in avanti su un rialzo basso, busto in avanti con schiena dritta, 8 sec per lato."},
+          {name:"Stretching — Quadricipiti", sets:2, mode:"time", duration:15, tip:"In piedi, piega un ginocchio portando il tallone al gluteo. Cambia lato alla seconda serie."},
+          {name:"Stretching — Polpacci", sets:2, mode:"time", duration:15, tip:"Gamba tesa indietro, tallone a terra. Cambia lato alla seconda serie."},
+          {name:"Stretching — Ischiocrurali", sets:2, mode:"time", duration:8, tip:"Gamba tesa in avanti su un rialzo basso, busto in avanti con schiena dritta. Cambia lato alla seconda serie."},
         ]
       }
     }
@@ -1201,7 +1272,9 @@ const DATA = {
           {name:"Bird dog dinamico", sets:3, mode:"reps", reps:"12 per lato", tip:"Tocca gomito e ginocchio sotto il corpo, poi estendi di nuovo braccio e gamba."},
           {name:"Side plank con rotazione", sets:2, mode:"reps", reps:"10 per lato", tip:"Da side plank, infila e riapri il braccio libero ruotando il busto."},
           {name:"Plank", sets:3, mode:"time", duration:45, tip:"Mantieni la posizione più a lungo possibile con buona tecnica."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:90, tip:"Postura del bambino: 25 sec. Torsione lombare da sdraiato: 15 sec per lato. Flessori dell'anca in affondo, ginocchio a terra: 15 sec per lato."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:25, tip:"Siediti sui talloni, allunga le braccia in avanti, rilassa la lombare."},
+          {name:"Stretching — Torsione lombare", sets:2, mode:"time", duration:15, tip:"Da sdraiato, ginocchia piegate verso un lato poi l'altro. Cambia lato alla seconda serie."},
+          {name:"Stretching — Flessori dell'anca", sets:2, mode:"time", duration:15, tip:"Affondo con ginocchio a terra. Cambia lato alla seconda serie."},
         ]
       },
       fisicoB: {
@@ -1217,7 +1290,10 @@ const DATA = {
           {name:"Curl bicipiti monobraccio da seduto", sets:2, mode:"reps", reps:"12 ripetizioni per braccio, carico più alto se riesci", tip:"Seduto, gomito appoggiato all'interno coscia o al fianco, sali un braccio alla volta senza aiutarti con il busto."},
           {name:"Estensione tricipiti con manubrio", sets:3, mode:"reps", reps:"12 ripetizioni", tip:"Manubrio sopra la testa con entrambe le mani, piega i gomiti portando il peso dietro la nuca, poi estendi."},
           {name:"Calf raise carico pesante", sets:4, mode:"reps", reps:"12 ripetizioni", tip:"Usa tutto il carico disponibile, movimento completo."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:90, tip:"Petto: braccio al muro dietro di te, ruota il busto dal lato opposto, 15 sec per lato. Tricipiti e bicipiti: 15 sec per lato ciascuno, come nelle sessioni precedenti. Polpacci: gamba tesa indietro, tallone a terra, spingi il bacino in avanti verso il muro, 15 sec per lato."},
+          {name:"Stretching — Petto", sets:2, mode:"time", duration:15, tip:"Braccio al muro dietro di te, ruota il busto dal lato opposto. Cambia lato alla seconda serie."},
+          {name:"Stretching — Tricipiti", sets:2, mode:"time", duration:15, tip:"Braccio piegato dietro la testa, spingi delicatamente il gomito. Cambia lato alla seconda serie."},
+          {name:"Stretching — Bicipiti", sets:2, mode:"time", duration:15, tip:"Braccio teso, palmo su, tira le dita indietro. Cambia lato alla seconda serie."},
+          {name:"Stretching — Polpacci", sets:2, mode:"time", duration:15, tip:"Gamba tesa indietro, tallone a terra, spingi il bacino in avanti verso il muro. Cambia lato alla seconda serie."},
         ]
       },
       fisicoC: {
@@ -1230,7 +1306,10 @@ const DATA = {
           {name:"Side plank", sets:1, mode:"time", duration:25, tip:"Un lato, poi ripeti sull'altro nella prossima serie."},
           {name:"Dead bug", sets:1, mode:"reps", reps:"10 per lato", tip:"Movimento lento e controllato per chiudere la sessione core."},
           {name:"Palleggio al muro in movimento laterale", sets:3, mode:"reps", reps:"30 palleggi consecutivi", tip:"Con la palla soft, palleggia contro il muro spostandoti lateralmente di un passo tra un tocco e l'altro. Simula il controllo che serve a rete su palle non perfette."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:90, tip:"Collo: inclina la testa lateralmente, 15 sec per lato. Trapezio: mano dietro la schiena, inclina la testa dal lato opposto, 10 sec per lato. Postura del bambino: 30 sec. Polso: braccio teso, tira le dita indietro, 5 sec per lato."},
+          {name:"Stretching — Collo", sets:2, mode:"time", duration:15, tip:"Inclina la testa lateralmente. Cambia lato alla seconda serie."},
+          {name:"Stretching — Trapezio", sets:2, mode:"time", duration:10, tip:"Mano dietro la schiena, inclina la testa dal lato opposto. Cambia lato alla seconda serie."},
+          {name:"Stretching — Postura del bambino", sets:1, mode:"time", duration:30, tip:"Rilassa il core in postura del bambino."},
+          {name:"Stretching — Polso", sets:2, mode:"time", duration:5, tip:"Braccio teso, tira le dita indietro. Cambia lato alla seconda serie."},
         ]
       },
       salto: {
@@ -1241,7 +1320,9 @@ const DATA = {
           {name:"Balzi laterali (side bounds)", sets:3, mode:"reps", reps:"8 per lato", tip:"Salta lateralmente da una gamba all'altra, atterraggio controllato."},
           {name:"Calf raise esplosivo", sets:4, mode:"reps", reps:"12 ripetizioni", tip:"Sali velocemente sulle punte, scendi lentamente e controllato."},
           {name:"Salto monopodalico controllato", sets:3, mode:"reps", reps:"6 per gamba", tip:"Piccolo salto e atterraggio sulla stessa gamba, mantenendo l'equilibrio."},
-          {name:"Stretching finale", sets:1, mode:"time", duration:90, tip:"Quadricipiti: in piedi, piega un ginocchio portando il tallone al gluteo, 15 sec per lato. Polpacci: gamba tesa indietro, tallone a terra, 15 sec per lato. Ischiocrurali: gamba tesa in avanti su un rialzo basso, busto in avanti con schiena dritta, 15 sec per lato."},
+          {name:"Stretching — Quadricipiti", sets:2, mode:"time", duration:15, tip:"In piedi, piega un ginocchio portando il tallone al gluteo. Cambia lato alla seconda serie."},
+          {name:"Stretching — Polpacci", sets:2, mode:"time", duration:15, tip:"Gamba tesa indietro, tallone a terra. Cambia lato alla seconda serie."},
+          {name:"Stretching — Ischiocrurali", sets:2, mode:"time", duration:15, tip:"Gamba tesa in avanti su un rialzo basso, busto in avanti con schiena dritta. Cambia lato alla seconda serie."},
         ]
       }
     }
@@ -1269,7 +1350,7 @@ function phaseForWeek(week){
 const WARMUP_COMMON = [
   {name:"Riscaldamento — Camminata sul posto", sets:1, mode:"time", duration:60, tip:"Cammina sul posto a ritmo sostenuto, braccia in movimento, per alzare la temperatura corporea.", warmup:true},
   {name:"Riscaldamento — Circonduzioni braccia", sets:1, mode:"time", duration:30, tip:"Braccia tese, fai ampi cerchi in avanti e poi indietro per sciogliere le spalle.", warmup:true},
-  {name:"Riscaldamento — Mobilità anche (leg swing)", sets:1, mode:"time", duration:30, tip:"Tenendoti a un supporto, oscilla una gamba avanti e indietro, poi cambia lato.", warmup:true},
+  {name:"Riscaldamento — Mobilità anche (leg swing)", sets:2, mode:"time", duration:15, tip:"Tenendoti a un supporto, oscilla una gamba avanti e indietro. Cambia gamba alla seconda serie.", warmup:true},
   {name:"Riscaldamento — Squat a corpo libero leggero", sets:1, mode:"reps", reps:"10 ripetizioni lente, senza carico", tip:"Movimento ampio e controllato solo per attivare le gambe, nessuno sforzo.", warmup:true},
 ];
 
@@ -1303,25 +1384,65 @@ const EXTRA_WORKOUT = {
     {name:"Estensione tricipiti con manubrio (French press)", sets:3, mode:"reps", reps:"12 ripetizioni", tip:"Manubrio sopra la testa con entrambe le mani, piega i gomiti portando il peso dietro la nuca, poi estendi."},
     {name:"Kickback tricipiti", sets:3, mode:"reps", reps:"12 per lato", tip:"Busto inclinato in avanti, gomito fermo alto, estendi l'avambraccio indietro senza muovere la spalla."},
     {name:"Piegamenti a presa stretta (diamond push-up)", sets:2, mode:"reps", reps:"8-10 ripetizioni", tip:"Mani vicine sotto il petto, gomiti che scorrono lungo i fianchi: più tricipiti, meno petto."},
-    {name:"Stretching finale", sets:1, mode:"time", duration:75, tip:"Petto: braccio al muro dietro di te, ruota il busto dal lato opposto, 15 sec per lato. Tricipiti: braccio piegato dietro la testa, spingi delicatamente il gomito, 15 sec per lato. Bicipiti/avambraccio: braccio teso, palmo su, tira le dita indietro, 15 sec per lato."},
+    {name:"Stretching — Petto", sets:2, mode:"time", duration:15, tip:"Braccio al muro dietro di te, ruota il busto dal lato opposto. Cambia lato alla seconda serie."},
+    {name:"Stretching — Tricipiti", sets:2, mode:"time", duration:15, tip:"Braccio piegato dietro la testa, spingi delicatamente il gomito. Cambia lato alla seconda serie."},
+    {name:"Stretching — Bicipiti/avambraccio", sets:2, mode:"time", duration:15, tip:"Braccio teso, palmo su, tira le dita indietro. Cambia lato alla seconda serie."},
   ]
+};
+
+// Blocco bonus facoltativo, proposto SOLO a fine allenamento e solo su richiesta esplicita.
+// Ho scelto di NON raddoppiare la sessione come chiesto alla lettera: con la tua storia di
+// blocco lombare, un volume aggiuntivo mirato (4 esercizi + stretching) dà comunque uno
+// stimolo in più nei giorni in cui hai davvero energia, senza il rischio di un volume
+// così alto da aumentare le probabilità di infortunio o di recupero incompleto.
+const ADVANCED_ADDONS = {
+  fisicoA: [
+    {name:"Plank con toccata spalla veloce", sets:3, mode:"reps", reps:"16 tocchi totali", tip:"Bonus core: stesso plank di prima ma tocchi la spalla opposta più rapidamente, bacino il più fermo possibile."},
+    {name:"Hollow body hold", sets:3, mode:"time", duration:20, tip:"Sdraiato, lombare premuta a terra, solleva spalle e gambe tese formando una leggera 'C'. Ottimo finisher per il core profondo."},
+    {name:"Superman hold", sets:3, mode:"time", duration:20, tip:"A pancia in giù, solleva contemporaneamente braccia e gambe tese, contrai i glutei e la zona lombare."},
+    {name:"Side plank con sollevamento anca", sets:2, mode:"reps", reps:"10 per lato", tip:"Da side plank, abbassa e risollevi il bacino senza farlo toccare terra. Cambia lato alla seconda serie."},
+  ],
+  fisicoB: [
+    {name:"Squat con pausa 3 sec in basso", sets:3, mode:"reps", reps:"8 ripetizioni, stesso carico di oggi", tip:"Bonus forza: stessa tecnica dello squat di oggi, ma con una pausa di 3 secondi nel punto più basso — più tempo sotto tensione."},
+    {name:"Affondi in camminata", sets:3, mode:"reps", reps:"10 per gamba", tip:"Affondi in movimento invece che sul posto, un passo alla volta in avanti per tutta la stanza se hai spazio."},
+    {name:"Alzate frontali con manubri", sets:3, mode:"reps", reps:"12 ripetizioni", tip:"Braccia tese, solleva i manubri fino all'altezza delle spalle davanti a te, controllato in discesa."},
+    {name:"Plank finale", sets:2, mode:"time", duration:30, tip:"Chiudi il bonus con un plank di qualità, corpo in linea, niente fretta."},
+  ],
+  fisicoC: [
+    {name:"Isometria collo — mantenimento prolungato", sets:3, mode:"time", duration:12, tip:"Bonus collo: stessa isometria frontale di oggi ma tenuta un po' più a lungo, sempre con forza costante e controllata."},
+    {name:"Rotazioni esterne spalla, tempo lento", sets:3, mode:"reps", reps:"12 per lato, discesa in 3 sec", tip:"Stesso movimento di rotazione esterna, ma rallenti la fase di ritorno per più lavoro sulla cuffia dei rotatori."},
+    {name:"Bird dog con pausa in alto", sets:3, mode:"reps", reps:"10 per lato, 2 sec di pausa", tip:"Come il bird dog di oggi, ma con una pausa di 2 secondi quando braccio e gamba sono tesi al massimo."},
+    {name:"Plank laterale, tenuta lunga", sets:2, mode:"time", duration:25, tip:"Side plank tenuto più a lungo del solito, cambia lato alla seconda serie."},
+  ],
+  salto: [
+    {name:"Balzi laterali continui", sets:3, mode:"time", duration:20, tip:"Bonus esplosività: salta lateralmente da un piede all'altro il più velocemente possibile mantenendo il controllo, per tutta la durata del timer."},
+    {name:"Squat jump con recupero attivo", sets:3, mode:"reps", reps:"8 ripetizioni", tip:"Stesso squat jump di oggi, atterraggio morbido, qualità sopra quantità anche qui a fine sessione."},
+    {name:"Calf raise esplosivo bonus", sets:3, mode:"reps", reps:"15 ripetizioni", tip:"Sali il più velocemente possibile sulle punte, scendi controllato — ultimo stimolo sui polpacci."},
+    {name:"Defaticamento finale", sets:1, mode:"time", duration:45, tip:"Cammina sul posto e respira profondamente: hai dato più del dovuto oggi, meriti un buon defaticamento."},
+  ],
 };
 
 function beginExtraWorkout(){
   workout = {
-    exercises: EXTRA_WORKOUT.exercises,
+    exercises: [...EXTRA_WORKOUT.exercises],
     warmupCount: EXTRA_WORKOUT.exercises.filter(e=> e.warmup).length,
     exIndex: 0,
     setIndex: 0,
     phase: "Sessione Extra",
     phaseShort: "Extra",
     session: EXTRA_WORKOUT.label + ' - ' + EXTRA_WORKOUT.desc,
-    week: todayInfo.week
+    week: todayInfo.week,
+    sessionKey: null,
+    advancedAdded: false,
+    preStretchHandled: false,
+    inAdvancedBlock: false,
+    completionSaved: false
   };
   homeScreen.classList.add('hidden');
   historyScreen.classList.add('hidden');
   doneScreen.classList.add('hidden');
   workoutScreen.classList.remove('hidden');
+  document.getElementById('appRoot').classList.remove('home-active');
   document.getElementById('topbar').classList.remove('hidden');
   backToMenuBtn.classList.remove('hidden');
   topTitle.textContent = EXTRA_WORKOUT.label;
@@ -1809,6 +1930,7 @@ function showMainHome(){
   document.getElementById('dashboardWrap').classList.remove('hidden');
   document.getElementById('homeFitOuter').classList.remove('hidden');
   document.getElementById('topbar').classList.add('hidden');
+  document.getElementById('appRoot').classList.add('home-active');
   viewAllenamento.classList.add('hidden');
   viewDieta.classList.add('hidden');
   viewSpesa.classList.add('hidden');
@@ -1853,10 +1975,13 @@ function fitHomeToScreen(){
   }
 
   let scale = availableHeight / naturalHeight;
-  if(scale < HOME_MIN_SCALE) scale = HOME_MIN_SCALE; // sotto questa soglia meglio scorrere che rimpicciolire troppo
+  if(scale < HOME_MIN_SCALE) scale = HOME_MIN_SCALE; // sotto questa soglia meglio scorrere (solo dentro il box) che rimpicciolire troppo
 
   wrap.style.transform = `scale(${scale})`;
-  outer.style.height = (naturalHeight * scale) + 'px';
+  // Il contenitore non deve MAI superare lo spazio realmente disponibile: se anche alla
+  // scala minima il contenuto è più alto dello schermo, l'eventuale scroll resta
+  // contenuto dentro homeFitOuter (che ha overflow-y:auto), non sull'intera pagina.
+  outer.style.height = Math.min(naturalHeight * scale, availableHeight) + 'px';
 }
 
 let homeFitResizeTimer = null;
@@ -1873,6 +1998,7 @@ function openSection(target){
   document.getElementById('dashboardWrap').classList.add('hidden');
   document.getElementById('homeFitOuter').classList.add('hidden');
   document.getElementById('topbar').classList.add('hidden');
+  document.getElementById('appRoot').classList.remove('home-active');
   backToMenuBtn.classList.add('hidden');
   viewAllenamento.classList.add('hidden');
   viewDieta.classList.add('hidden');
@@ -2238,12 +2364,18 @@ function beginWorkout(phaseNum, sessionKey, weekNum){
     phase: phaseData.label + ' - ' + phaseData.sub,
     phaseShort: phaseData.label,
     session: sessionData.label + ' - ' + sessionData.desc,
-    week: weekNum
+    week: weekNum,
+    sessionKey: sessionKey,
+    advancedAdded: false,
+    preStretchHandled: false,
+    inAdvancedBlock: false,
+    completionSaved: false
   };
   homeScreen.classList.add('hidden');
   historyScreen.classList.add('hidden');
   doneScreen.classList.add('hidden');
   workoutScreen.classList.remove('hidden');
+  document.getElementById('appRoot').classList.remove('home-active');
   document.getElementById('topbar').classList.remove('hidden');
   backToMenuBtn.classList.remove('hidden');
   topTitle.textContent = sessionData.label;
@@ -2307,6 +2439,7 @@ function showExercise(){
     doneBtn.onclick = onSetComplete;
     controls.appendChild(doneBtn);
     controls.appendChild(skipRow());
+    if(workout.inAdvancedBlock) controls.appendChild(stretchShortcutRow());
 
     if(showWeightInput){
       loadLastWeight(ex.name).then(lastKg=>{
@@ -2337,6 +2470,7 @@ function showExercise(){
     startTimerBtn.onclick = ()=> runTimer(ex.duration, startTimerBtn);
     controls.appendChild(startTimerBtn);
     controls.appendChild(skipRow());
+    if(workout.inAdvancedBlock) controls.appendChild(stretchShortcutRow());
   }
 }
 
@@ -2349,6 +2483,21 @@ function skipRow(){
   b.style.width = '100%';
   b.textContent = 'Salta questo esercizio →';
   b.onclick = goToNextExercise;
+  wrap.appendChild(b);
+  return wrap;
+}
+
+// Visibile solo durante il blocco "allenamento extra": permette di interrompere il bonus
+// in qualsiasi momento e passare subito allo stretching finale.
+function stretchShortcutRow(){
+  const wrap = document.createElement('div');
+  wrap.className = 'row-btns';
+  wrap.style.marginTop = '4px';
+  const b = document.createElement('button');
+  b.className = 'cta ghost';
+  b.style.width = '100%';
+  b.textContent = '🧘 Interrompi il bonus e vai allo stretching';
+  b.onclick = jumpToStretching;
   wrap.appendChild(b);
   return wrap;
 }
@@ -2444,18 +2593,100 @@ function onSetComplete(){
   }
 }
 
+// Trova dinamicamente dove inizia il blocco di stretching finale nell'array esercizi
+// (nome che comincia con "Stretching — "). Viene ricalcolato ogni volta perché l'array
+// può cambiare lunghezza quando si inserisce il blocco extra.
+function getStretchStartIndex(){
+  return workout.exercises.findIndex(e => e.name && e.name.indexOf('Stretching —') === 0);
+}
+
 function goToNextExercise(){
   clearInterval(timerInterval);
   const finishedEx = currentExercise();
   const rest = restForExercise(finishedEx);
+  const stretchIdx = getStretchStartIndex();
+
   if(workout.exIndex < workout.exercises.length - 1){
-    workout.exIndex += 1;
+    const nextIndex = workout.exIndex + 1;
+    // Punto di decisione: la parte principale è finita, sta per iniziare lo stretching.
+    // Prima chiediamo se vuole il blocco extra, invece di infilarsi dritto nello stretching.
+    if(stretchIdx !== -1 && nextIndex === stretchIdx && !workout.preStretchHandled){
+      workout.preStretchHandled = true;
+      showPreStretchChoice();
+      return;
+    }
+    workout.exIndex = nextIndex;
     workout.setIndex = 0;
     const nextEx = currentExercise();
     showRest(rest.next, `Prossimo esercizio: ${nextEx.name}`, showExercise);
   } else {
     finishWorkout();
   }
+}
+
+// Schermata di scelta mostrata subito dopo l'ultimo esercizio "vero" e prima dello
+// stretching finale: allenamento extra oppure stretching diretto.
+function showPreStretchChoice(){
+  clearInterval(timerInterval);
+  renderProgress();
+  const stage = document.getElementById('stage');
+  const controls = document.getElementById('controlsArea');
+  document.getElementById('exTag').textContent = 'Parte principale completata';
+  document.getElementById('exName').textContent = 'Cosa vuoi fare adesso?';
+  document.getElementById('exTip').textContent = '';
+
+  stage.innerHTML = `
+    <div class="rest-screen" style="text-align:center; padding:0 12px;">
+      <div style="font-size:46px; margin-bottom:8px;">🎯</div>
+      <div class="rest-title">Hai finito gli esercizi principali</div>
+      <div class="rest-next" style="font-weight:600; font-size:13.5px; color:var(--sub); margin-top:8px; line-height:1.5;">
+        Vuoi dare ancora di più con un blocco extra mirato, oppure passare direttamente allo stretching finale?
+      </div>
+    </div>
+  `;
+  controls.innerHTML = '';
+
+  const hasAddons = workout.sessionKey && ADVANCED_ADDONS[workout.sessionKey];
+  if(hasAddons){
+    const advBtn = document.createElement('button');
+    advBtn.className = 'cta';
+    advBtn.textContent = '💥 Allenamento extra';
+    advBtn.onclick = startAdvancedBlockMidWorkout;
+    controls.appendChild(advBtn);
+  }
+  const stretchBtn = document.createElement('button');
+  stretchBtn.className = 'cta secondary';
+  stretchBtn.textContent = '🧘 Vai allo stretching';
+  stretchBtn.onclick = jumpToStretching;
+  controls.appendChild(stretchBtn);
+}
+
+// Inserisce il blocco bonus subito PRIMA dello stretching (che resta sempre raggiungibile
+// dopo, o in qualsiasi momento tramite il pulsante dedicato che appare durante il bonus).
+function startAdvancedBlockMidWorkout(){
+  const addons = ADVANCED_ADDONS[workout.sessionKey];
+  const stretchIdx = getStretchStartIndex();
+  if(!addons || stretchIdx === -1){ jumpToStretching(); return; }
+  workout.exercises.splice(stretchIdx, 0, ...addons.map(e=> ({...e})));
+  workout.advancedAdded = true;
+  workout.inAdvancedBlock = true;
+  workout.exIndex = stretchIdx;
+  workout.setIndex = 0;
+  renderProgress();
+  showExercise();
+}
+
+// Salta al blocco di stretching in qualsiasi momento — sia dalla schermata di scelta,
+// sia durante il bonus se decidi di interromperlo prima del previsto.
+function jumpToStretching(){
+  clearInterval(timerInterval);
+  const idx = getStretchStartIndex();
+  workout.inAdvancedBlock = false;
+  if(idx === -1){ finishWorkout(); return; }
+  workout.exIndex = idx;
+  workout.setIndex = 0;
+  renderProgress();
+  showExercise();
 }
 
 function showRest(seconds, nextLabel, callback){
@@ -2527,10 +2758,19 @@ function launchConfetti(){
 async function finishWorkout(){
   workoutScreen.classList.add('hidden');
   doneScreen.classList.remove('hidden');
-  document.getElementById('doneSub').textContent = `${workout.session} (Settimana ${workout.week}) completata e salvata nella cronologia.`;
+  document.getElementById('doneSub').textContent = workout.advancedAdded
+    ? `${workout.session} (Settimana ${workout.week}) completata, bonus extra incluso. Hai dato davvero di più oggi.`
+    : `${workout.session} (Settimana ${workout.week}) completata e salvata nella cronologia.`;
   launchConfetti();
   if(navigator.vibrate) navigator.vibrate([80,40,80]);
-  await saveCompletion(workout.phaseShort, workout.session, workout.week);
+
+  // Evitiamo di salvare due volte la stessa sessione in cronologia: la scelta
+  // extra/stretching avviene PRIMA di arrivare qui, quindi finishWorkout scatta
+  // una sola volta a sessione, con o senza bonus incluso.
+  if(!workout.completionSaved){
+    await saveCompletion(workout.phaseShort, workout.session, workout.week);
+    workout.completionSaved = true;
+  }
 }
 
 document.getElementById('doneBackBtn').onclick = ()=>{
@@ -2566,6 +2806,52 @@ async function saveMealCheckedState(){
   try{ await Store.set('meal-checked-state', JSON.stringify(mealCheckedState)); }
   catch(e){ console.error('Errore salvataggio pasti', e); }
 }
+
+/* ===================== OVERLAY QUANTITÀ PASTO ===================== */
+let mealPctCurrentKey = null;
+
+function openMealPctOverlay(key, mealTitle){
+  mealPctCurrentKey = key;
+  const existing = getMealCheck(key);
+  document.getElementById('mealPctMsg').textContent = existing
+    ? `Hai già segnato "${mealTitle}". Aggiorna la quantità, o segnalo come non mangiato.`
+    : `Se ti mancava qualche ingrediente (tipo una salsa) per "${mealTitle}", i valori nutrizionali si aggiustano di conseguenza.`;
+  document.getElementById('mealPctUncheckBtn').classList.toggle('hidden', !existing);
+  document.getElementById('mealPctOverlay').classList.remove('hidden');
+}
+
+function closeMealPctOverlay(){
+  document.getElementById('mealPctOverlay').classList.add('hidden');
+  mealPctCurrentKey = null;
+}
+
+async function setMealPct(pct){
+  if(!mealPctCurrentKey) return;
+  mealCheckedState[mealPctCurrentKey] = { pct, loggedDate: todayDateKey() };
+  await saveMealCheckedState();
+  closeMealPctOverlay();
+  renderDietDayList();
+  renderMacroTracker();
+  renderWeekSummary();
+  renderDietaTodayHero();
+}
+
+async function uncheckMeal(){
+  if(!mealPctCurrentKey) return;
+  delete mealCheckedState[mealPctCurrentKey];
+  await saveMealCheckedState();
+  closeMealPctOverlay();
+  renderDietDayList();
+  renderMacroTracker();
+  renderWeekSummary();
+  renderDietaTodayHero();
+}
+
+document.querySelectorAll('.meal-pct-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> setMealPct(parseInt(btn.dataset.pct, 10)));
+});
+document.getElementById('mealPctUncheckBtn').addEventListener('click', uncheckMeal);
+document.getElementById('mealPctCancelBtn').addEventListener('click', closeMealPctOverlay);
 
 /* ===================== TRACKER MACRO GIORNALIERO ===================== */
 // Target calcolati sul profilo dell'utente (peso, altezza, età, sesso) con la formula
@@ -2663,16 +2949,50 @@ function getMealMacros(weekNum, dayKey, mealType){
   return meal && meal.macros ? meal.macros : null;
 }
 
+// Ogni pasto spuntato ora porta con sé anche QUANTO ne hai mangiato (100/75/50/25%,
+// utile quando ti mancava un ingrediente) e QUANDO l'hai spuntato davvero. Le voci
+// vecchie (semplicemente `true`) restano compatibili: valgono 100% e nessuna data.
+function getMealCheck(key){
+  const v = mealCheckedState[key];
+  if(!v) return null;
+  if(v === true) return { pct: 100, loggedDate: null };
+  return v;
+}
+function isMealChecked(key){ return !!getMealCheck(key); }
+
+function parseMealKey(key){
+  const m = key.match(/^w(\d+)-([a-z]+)-([a-z]+)$/);
+  if(!m) return null;
+  return { week: parseInt(m[1], 10), dayKey: m[2], mealType: m[3] };
+}
+
+// Somma tutto ciò che hai spuntato OGGI, in base a QUANDO l'hai spuntato (non a quale
+// giorno del piano appartiene quel pasto). Così se ieri salti un pasto e lo recuperi
+// oggi, spuntandolo oggi conta comunque nel totale di oggi — non va perso nel giorno
+// sbagliato.
 function computeTodayMealTotals(){
   const totals = { kcal:0, p:0, c:0, f:0 };
-  const wk = `w${todayInfo.week}`;
-  ['colazione','pranzo','merenda','frullato','cena'].forEach(mt=>{
-    const key = `${wk}-${todayInfo.dayKey}-${mt}`;
-    if(mealCheckedState[key]){
-      const m = getMealMacros(todayInfo.week, todayInfo.dayKey, mt);
-      if(m){ totals.kcal += m.kcal; totals.p += m.p; totals.c += m.c; totals.f += m.f; }
+  const todayKey = todayDateKey();
+  Object.keys(mealCheckedState).forEach(key=>{
+    const info = getMealCheck(key);
+    if(!info) return;
+    const loggedDate = info.loggedDate || todayKey; // voci vecchie senza data: considerate di oggi
+    if(loggedDate !== todayKey) return;
+    const parsed = parseMealKey(key);
+    if(!parsed) return;
+    const m = getMealMacros(parsed.week, parsed.dayKey, parsed.mealType);
+    if(m){
+      const factor = (info.pct != null ? info.pct : 100) / 100;
+      totals.kcal += m.kcal * factor;
+      totals.p += m.p * factor;
+      totals.c += m.c * factor;
+      totals.f += m.f * factor;
     }
   });
+  totals.kcal = Math.round(totals.kcal);
+  totals.p = Math.round(totals.p);
+  totals.c = Math.round(totals.c);
+  totals.f = Math.round(totals.f);
   return totals;
 }
 
@@ -2762,10 +3082,15 @@ function computeWeekMealTotals(week){
     let logged = false;
     ['colazione','pranzo','merenda','frullato','cena'].forEach(mt=>{
       const key = `w${week}-${dayKey}-${mt}`;
-      if(mealCheckedState[key]){
+      const info = getMealCheck(key);
+      if(info){
         logged = true;
         const m = getMealMacros(week, dayKey, mt);
-        if(m){ totals.kcal += m.kcal; totals.p += m.p; totals.c += m.c; totals.f += m.f; }
+        if(m){
+          const factor = (info.pct != null ? info.pct : 100) / 100;
+          totals.kcal += m.kcal * factor; totals.p += m.p * factor;
+          totals.c += m.c * factor; totals.f += m.f * factor;
+        }
       }
     });
     const dk = dateKeyForWeekDay(week, idx);
@@ -2953,9 +3278,18 @@ document.getElementById('extraSaveBtn').onclick = async ()=>{
 };
 
 // Stima automatica dei valori nutrizionali per il cibo fuori piano, tramite l'API di
-// Claude. Funziona quando l'app viene usata dentro Claude (che fa da proxy autenticato
-// verso api.anthropic.com); se il file viene aperto come pagina locale/standalone al di
-// fuori di Claude, la chiamata fallisce e l'utente può comunque inserire i valori a mano.
+// Claude. Dentro Claude.ai la richiesta passa già autenticata (nessuna chiave necessaria).
+// Fuori da Claude (file aperto standalone in un browser) serve una chiave API OpenRouter
+// personale, salvata in Impostazioni: in quel caso la aggiungiamo noi stessi alla richiesta,
+//  (OpenRouter supporta le chiamate dirette dal browser).
+let userApiKey = null;
+async function loadUserApiKey(){
+  try{
+    const res = await Store.get('user-api-key');
+    userApiKey = res && res.value ? res.value : null;
+  }catch(e){ userApiKey = null; }
+}
+
 document.getElementById('extraAutoBtn').addEventListener('click', async ()=>{
   const desc = document.getElementById('extraDesc').value.trim();
   const btn = document.getElementById('extraAutoBtn');
@@ -2972,22 +3306,42 @@ document.getElementById('extraAutoBtn').addEventListener('click', async ()=>{
   statusEl.textContent = '';
   statusEl.className = 'extra-auto-status';
   try{
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    if(userApiKey === null) await loadUserApiKey();
+    const headers = { 'Content-Type': 'application/json' };
+    if(userApiKey){
+      headers['Authorization'] = `Bearer ${userApiKey}`;
+      headers['HTTP-Referer'] = window.location.href;
+      headers['X-Title'] = 'Allenamento Interattivo';
+    }
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'openrouter/free',
+        models: [
+          'openrouter/free',
+          'openai/gpt-oss-120b:free',
+          'openai/gpt-oss-20b:free'
+        ],
         max_tokens: 200,
+        temperature: 0.1,
         messages: [{
           role: 'user',
           content: `Stima i valori nutrizionali approssimativi per questo alimento/pasto (tieni conto del locale o marchio indicato, se presente, per una stima più realistica): "${desc}". Se la quantità non è chiara, assumi una porzione singola tipica per un pasto normale. Rispondi SOLO con un oggetto JSON valido, senza testo aggiuntivo, senza backtick, esattamente in questo formato: {"kcal":numero,"protein":numero,"carbs":numero,"fat":numero} — kcal in kilocalorie, protein/carbs/fat in grammi, tutti numeri interi.`
         }]
       })
     });
-    if(!response.ok) throw new Error('Richiesta non riuscita');
+    if(!response.ok){
+      let detail = '';
+      try{
+        const errData = await response.json();
+        detail = errData?.error?.message || errData?.message || '';
+      }catch(_){}
+      throw new Error(`API ${response.status}${detail ? ': ' + detail : ''}`);
+    }
     const data = await response.json();
-    const text = (data.content || []).map(block => block.text || '').join('').trim();
-    const clean = text.replace(/```json|```/g, '').trim();
+    const responseText = data?.choices?.[0]?.message?.content?.trim() || '';
+    const clean = responseText.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
     if(typeof parsed.kcal !== 'number') throw new Error('Formato non valido');
 
@@ -2998,7 +3352,28 @@ document.getElementById('extraAutoBtn').addEventListener('click', async ()=>{
     statusEl.textContent = '✓ Valori stimati — controllali e correggili se serve.';
     statusEl.className = 'extra-auto-status ok';
   }catch(e){
-    statusEl.textContent = 'Non sono riuscito a stimare i valori automaticamente. Inseriscili a mano qui sotto.';
+    console.error('Errore stima nutrizionale:', e);
+    if(!userApiKey){
+      statusEl.textContent = 'Inserisci una chiave API OpenRouter in Impostazioni → Stima nutrizionale.';
+    }else if(e?.message?.startsWith('API 401')){
+      statusEl.textContent = 'Chiave OpenRouter non valida o non autorizzata. Controllala in Impostazioni.';
+    }else if(e?.message?.startsWith('API 402')){
+      statusEl.textContent = 'La chiave è valida, ma OpenRouter non può completare la richiesta. Controlla il credito o i limiti del tuo account.';
+    }else if(e?.message?.startsWith('API 403')){
+      statusEl.textContent = 'Richiesta rifiutata da OpenRouter. Controlla chiave e permessi.';
+    }else if(e?.message?.startsWith('API 429')){
+      statusEl.textContent = 'Limite del modello raggiunto. OpenRouter proverà automaticamente un modello di riserva; se anche quello fallisce, riprova tra poco.';
+    }else if(e?.message?.startsWith('API 4')){
+      statusEl.textContent = `Errore API: ${e.message}`;
+    }else if(e?.message?.startsWith('API 5')){
+      statusEl.textContent = 'Errore temporaneo dei server OpenRouter. Riprova tra poco.';
+    }else if(e instanceof TypeError){
+      statusEl.textContent = 'Impossibile raggiungere OpenRouter. Controlla la connessione Internet.';
+    }else if(e instanceof SyntaxError){
+      statusEl.textContent = 'Il modello ha restituito una risposta non valida. Riprova.';
+    }else{
+      statusEl.textContent = `Errore nella stima: ${e?.message || 'errore sconosciuto'}`;
+    }
     statusEl.className = 'extra-auto-status err';
   }finally{
     btn.disabled = false;
@@ -3006,13 +3381,43 @@ document.getElementById('extraAutoBtn').addEventListener('click', async ()=>{
   }
 });
 
+document.getElementById('apiKeySaveBtn').addEventListener('click', async ()=>{
+  const input = document.getElementById('apiKeyInput');
+  const status = document.getElementById('apiKeyStatus');
+  const val = input.value.trim();
+  if(!val){ status.textContent = 'Incolla prima una chiave.'; status.style.color = 'var(--red, #E8483C)'; return; }
+  try{
+    await Store.set('user-api-key', val);
+    userApiKey = val;
+    status.textContent = '✓ Chiave salvata su questo dispositivo.';
+    status.style.color = 'var(--teal)';
+    input.value = '';
+  }catch(e){
+    status.textContent = 'Errore nel salvataggio, riprova.';
+    status.style.color = 'var(--red, #E8483C)';
+  }
+});
+document.getElementById('apiKeyClearBtn').addEventListener('click', async ()=>{
+  const status = document.getElementById('apiKeyStatus');
+  try{
+    await Store.set('user-api-key', '');
+    userApiKey = null;
+    document.getElementById('apiKeyInput').value = '';
+    status.textContent = 'Chiave rimossa.';
+    status.style.color = 'var(--sub)';
+  }catch(e){ /* silenzioso */ }
+});
+
 function mealRowHtml(label, meal, clickable, checkKey){
   if(!meal) return '';
-  const isChecked = !!mealCheckedState[checkKey];
+  const info = getMealCheck(checkKey);
+  const isChecked = !!info;
+  const pct = info ? (info.pct != null ? info.pct : 100) : 100;
+  const checkContent = isChecked ? (pct < 100 ? `${pct}%` : '✓') : '';
   return `<div class="meal-block">
     <div class="meal-label">${label}</div>
     <div class="meal-row ${clickable ? '' : 'static'} ${isChecked ? 'meal-done' : ''}" data-recipe="${clickable ? encodeURIComponent(meal.title) : ''}">
-      <div class="meal-check ${isChecked ? 'checked' : ''}" role="checkbox" aria-checked="${isChecked}" tabindex="0" aria-label="Segna ${meal.title} come completato" data-checkkey="${checkKey}">${isChecked ? '✓' : ''}</div>
+      <div class="meal-check ${isChecked ? 'checked' : ''} ${isChecked && pct < 100 ? 'partial' : ''}" role="checkbox" aria-checked="${isChecked}" tabindex="0" aria-label="Segna ${meal.title} come mangiato" data-checkkey="${checkKey}">${checkContent}</div>
       <div style="flex:1;">
         <div class="meal-title">${meal.title}</div>
         ${meal.desc ? `<div class="meal-desc">${meal.desc}</div>` : ''}
@@ -3061,14 +3466,12 @@ function renderDietDayList(){
       }
     });
     card.querySelectorAll('.meal-check').forEach(box=>{
-      box.onclick = async (ev)=>{
+      box.onclick = (ev)=>{
         ev.stopPropagation();
         const key = box.dataset.checkkey;
-        mealCheckedState[key] = !mealCheckedState[key];
-        await saveMealCheckedState();
-        renderDietDayList();
-        renderMacroTracker();
-        renderWeekSummary();
+        const mealTitleEl = box.closest('.meal-row').querySelector('.meal-title');
+        const mealTitle = mealTitleEl ? mealTitleEl.textContent : 'questo pasto';
+        openMealPctOverlay(key, mealTitle);
       };
     });
     list.appendChild(card);
@@ -3416,6 +3819,8 @@ async function renderShopList(){
   const pct = total > 0 ? Math.round((checked/total)*100) : 0;
   document.getElementById('shopProgressBar').style.width = pct + '%';
   document.getElementById('shopProgressText').textContent = `${checked} di ${total} prodotti presi`;
+  const badgeEl = document.getElementById('tabSpesaBadge');
+  if(badgeEl) badgeEl.textContent = pct + '%';
 }
 
 const shopSearchInput = document.getElementById('shopSearch');
@@ -3571,7 +3976,7 @@ async function renderDietaTodayHero(){
     { label:'Cena', meal:dietCena, key:`${wk}-${dietDay.key}-cena` }
   ];
   document.getElementById('dietaTodayRows').innerHTML = dietMeals.map(m=>{
-    const isDone = !!mealCheckedState[m.key];
+    const isDone = isMealChecked(m.key);
     return `<div class="today-diet-row ${isDone ? 'done' : ''}">
       <div class="tdr-check">${isDone ? '✓' : ''}</div>
       <span class="tdr-meal">${m.label}</span>
@@ -3580,21 +3985,26 @@ async function renderDietaTodayHero(){
   }).join('');
   document.getElementById('dietaTodayHero').onclick = ()=>{
     currentWeek = todayInfo.week;
-    renderDietAll();
     expandedDayTouched = false;
     expandedDay = null;
+    renderDietAll();
+    requestAnimationFrame(()=>{
+      const list = document.getElementById('dietDayList');
+      if(list) list.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
   };
 }
 
 async function renderDashboard(){
   try{
-    const res = await Store.get('shopping-list-state');
-    const state = res && res.value ? JSON.parse(res.value) : {};
+    await loadShopState();
     let total = 0, checked = 0;
     SHOP_CATEGORIES.forEach((cat, ci)=> cat.items.forEach((_, ii)=>{
       total += 1;
-      if(state[shopItemKey(ci, ii)]) checked += 1;
+      if(shopCheckedState[shopItemKey(ci, ii)]) checked += 1;
     }));
+    total += shopCustomItems.length;
+    checked += shopCustomItems.filter(it=> shopCheckedState['custom-' + it.id]).length;
     document.getElementById('tabSpesaBadge').textContent = (total > 0 ? Math.round(checked/total*100) : 0) + '%';
   }catch(e){
     document.getElementById('tabSpesaBadge').textContent = '0%';
@@ -3639,15 +4049,11 @@ async function renderDashboard(){
 async function initApp(){
   todayInfo = computeTodayInfo();
   currentWeek = todayInfo.week; // parte sempre dalla settimana vera di oggi
+  await loadUserApiKey();
   showMainHome();
 }
 
 initApp();
-</script>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
 </script>
 </body>
 </html>
